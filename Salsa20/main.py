@@ -1,3 +1,11 @@
+# 16-байтный ключ
+key = [1, 2, 3, 4]
+
+t0 = [101, 120, 112, 97]
+t1 = [110, 100, 32, 49]
+t2 = [54, 45, 98, 121]
+t3 = [116, 101, 32, 107]
+
 def littleendian(b0, b1, b2, b3):  # b3 - старший
     res = (b3 << 8) | b2
     res = (res << 8) | b1
@@ -57,22 +65,23 @@ def doubleround(y):  # y - массив из 16 элементов (матриц
 
 
 def salsa20(x):
-    i = 1
-    z = doubleround(x)
-    while i < 10:
-        z = doubleround(z)
-        i = i + 1
+    x_clone = list(x)
+    z = []
+    while len(x_clone):
+        current_z = x_clone[0:16:1]
+        del x_clone[0:16]
+        for j in range(10):
+            current_z = doubleround(current_z)
+        z = z + current_z
 
     sum_array = []
-    i = 0
-    while i < 16:
-        sum_array.append(x[i] | z[i])
-        i = i + 1
+    for j in range(len(x)):
+        sum_array.append(x[j] | z[j])
 
     resulting_sequence = []
-    for i in sum_array:
-        cod = littleendian_back(i)
-        resulting_sequence = resulting_sequence + cod
+    for word in sum_array:
+        res_bytes = littleendian_back(word)
+        resulting_sequence = resulting_sequence + res_bytes
 
     return resulting_sequence
 
@@ -98,5 +107,4 @@ if __name__ == '__main__':
     coded_sequence = encode_salsa20(y)
 
     for i in range(0, len(coded_sequence), 4):
-        print(coded_sequence[i], coded_sequence[i+1], coded_sequence[i+2], coded_sequence[i+3], )
-
+        print(coded_sequence[i], coded_sequence[i+1], coded_sequence[i+2], coded_sequence[i+3])
