@@ -20,9 +20,6 @@ tableF = [row0, row1, row2, row3, row4, row5, row6, row7, row8, row9, rowA, rowB
 key = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 key_bytes = bytearray(key)
 
-counterE = 0
-counterD = 33
-
 def replaceF(byte):
 
     older = (byte & 240) >> 4  # 1111 0000
